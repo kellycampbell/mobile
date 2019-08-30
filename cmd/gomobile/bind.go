@@ -94,9 +94,11 @@ func runBind(cmd *command) error {
 	}
 
 	if ctx.GOOS == "android" {
-		if _, err := ndkRoot(); err != nil {
+		x, err := ndkRoot()
+		if err != nil {
 			return err
 		}
+		fmt.Printf("ndkroot = %v\n", x)
 	}
 
 	if ctx.GOOS == "darwin" {

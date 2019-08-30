@@ -45,6 +45,7 @@ func goAndroidBind(gobind string, pkgs []*build.Package, androidArchs []string) 
 	for _, p := range pkgs {
 		cmd.Args = append(cmd.Args, p.ImportPath)
 	}
+	fmt.Printf("runCmd = %v\n", cmd)
 	if err := runCmd(cmd); err != nil {
 		return err
 	}

@@ -34,6 +34,7 @@ var (
 	bootclasspath = flag.String("bootclasspath", "", "Java bootstrap classpath.")
 	classpath     = flag.String("classpath", "", "Java classpath.")
 	tags          = flag.String("tags", "", "build tags.")
+	obfuscate     = flag.Bool("obfuscate", true, "obfuscate code before compiling")
 )
 
 var usage = `The Gobind tool generates Java language bindings for Go.
@@ -66,6 +67,7 @@ func run() {
 		BuildFlags: []string{"-tags", strings.Join(strings.Split(*tags, ","), " ")},
 	}
 
+	fmt.Println("gobind run...")
 	// Call Load twice to warm the cache. There is a known issue that the result of Load
 	// depends on build cache state. See golang/go#33687.
 	packages.Load(cfg, flag.Args()...)
@@ -145,6 +147,8 @@ func run() {
 			}
 		}
 	}
+
+	fmt.Println("finished generating source")
 
 	typePkgs := make([]*types.Package, len(allPkg))
 	astPkgs := make([][]*ast.File, len(allPkg))

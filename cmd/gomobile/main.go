@@ -38,6 +38,7 @@ func printUsage(w io.Writer) {
 }
 
 func main() {
+	fmt.Println("GoMobile main")
 	gomobileName = os.Args[0]
 	flag.Usage = func() {
 		printUsage(os.Stderr)

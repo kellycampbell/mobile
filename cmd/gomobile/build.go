@@ -252,7 +252,7 @@ func addBuildFlags(cmd *command) {
 
 func addBuildFlagsNVXWork(cmd *command) {
 	cmd.flag.BoolVar(&buildN, "n", false, "")
-	cmd.flag.BoolVar(&buildV, "v", false, "")
+	cmd.flag.BoolVar(&buildV, "v", true, "")
 	cmd.flag.BoolVar(&buildX, "x", false, "")
 	cmd.flag.BoolVar(&buildWork, "work", false, "")
 }
@@ -278,7 +278,8 @@ func init() {
 }
 
 func goBuild(src string, env []string, args ...string) error {
-	return goCmd("build", []string{src}, env, args...)
+	// return goCmd("build", []string{src}, env, args...)
+	return goCmd("gobfuscate", []string{src}, env, args...)
 }
 
 func goInstall(srcs []string, env []string, args ...string) error {
@@ -290,11 +291,14 @@ func goCmd(subcmd string, srcs []string, env []string, args ...string) error {
 		goBin(),
 		subcmd,
 	)
+	if subcmd == "gobfuscate" {
+		cmd = exec.Command("gobfuscate")
+	}
 	if len(ctx.BuildTags) > 0 {
 		cmd.Args = append(cmd.Args, "-tags", strings.Join(ctx.BuildTags, " "))
 	}
 	if buildV {
-		cmd.Args = append(cmd.Args, "-v")
+		cmd.Args = append(cmd.Args, "-verbose")
 	}
 	if subcmd != "install" && buildI {
 		cmd.Args = append(cmd.Args, "-i")
@@ -316,6 +320,7 @@ func goCmd(subcmd string, srcs []string, env []string, args ...string) error {
 	cmd.Env = append([]string{}, env...)
 	// gomobile does not support modules yet.
 	cmd.Env = append(cmd.Env, "GO111MODULE=off")
+	fmt.Printf("goCmd: %v\n", cmd)
 	return runCmd(cmd)
 }
 
